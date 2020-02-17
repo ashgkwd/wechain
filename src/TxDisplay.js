@@ -100,7 +100,7 @@ export default class TxDisplay extends React.Component {
         </Col>
 
         <Col span={6}>
-          <Card title="Send VET">
+          <Card title="Send VET 🤑">
             <p>
               <Input placeholder="Receipient address" />
             </p>
