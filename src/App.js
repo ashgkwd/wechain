@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "antd";
+import { Layout, Button } from "antd";
 import "antd/dist/antd.css";
 import "./App.css";
 
@@ -13,6 +13,7 @@ class TxDisplay extends React.Component {
   constructor() {
     super();
     this.account = "0x8219094017Ff969dCd39957b09DB8a76BbD685e9";
+    this.privateKey = "hidden";
     this.receiver = "0xb8d8C361c5C71C0959d7d419f50B0B90A3E3D3cd";
     this.state = { label: "loading", balance: "na", energy: "na" };
     this.loader = fetch("http://localhost:8669/accounts/" + this.account)
@@ -38,6 +39,30 @@ class TxDisplay extends React.Component {
       .then(res => console.log("received genesis", res));
   }
 
+  sendSignedTransaction = rawTransaction => {
+    web3.eth.sendSignedTransaction(rawTransaction).on("receipt", data => {
+      console.log("transaction receipt", data);
+      this.setState({ transaction: "success" });
+    });
+  };
+
+  sendMoney = () => {
+    const tx = {
+      to: this.receiver,
+      value: 100
+    };
+
+    this.sending = web3.eth.accounts
+      .signTransaction(tx, this.privateKey)
+      .then(res => {
+        console.log("received signed transaction", res);
+        return this.sendSignedTransaction(res.rawTransaction);
+      })
+      .catch(err => {
+        console.error("failed to sign", err);
+      });
+  };
+
   render() {
     return (
       <div>
@@ -45,6 +70,7 @@ class TxDisplay extends React.Component {
         <p>Account: {this.account}</p>
         <p>Balance: {this.state.balance}</p>
         <p>Energy: {this.state.energy}</p>
+        <Button onClick={this.sendMoney}>Send 9</Button>
       </div>
     );
   }
