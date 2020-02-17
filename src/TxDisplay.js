@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card } from "antd";
+import { Button, Card, Row, Col, Input } from "antd";
 import "antd/dist/antd.css";
 import "./App.css";
 
@@ -47,6 +47,16 @@ export default class TxDisplay extends React.Component {
       .then(res => console.log("received genesis", res));
   }
 
+  getBalance = () => {
+    web3.eth
+      .getBalance(Owner.address)
+      .then(bal => this.setState({ ownerBalance: bal }));
+  };
+
+  componentDidMount() {
+    this.getBalance();
+  }
+
   sendSignedTransaction = rawTransaction => {
     web3.eth.sendSignedTransaction(rawTransaction).on("receipt", data => {
       console.log("transaction receipt", data);
@@ -73,18 +83,37 @@ export default class TxDisplay extends React.Component {
 
   render() {
     return (
-      <div>
-        <p>{this.state.label}</p>
-        <p>Account: {this.account}</p>
-        <p>Balance: {this.state.balance}</p>
-        <p>Energy: {this.state.energy}</p>
-        <Button onClick={this.sendMoney}>Send 9</Button>
+      <Row type="flex" justify="space-around">
+        <Col span={8}>
+          <Card title="Owner Account 😎" bordered={false}>
+            <p>
+              <strong>Address</strong>
+              <br />
+              <span>{Owner.address}</span>
+            </p>
+            <p>
+              <strong>Balance</strong>
+              <br />
+              <span>{this.state.ownerBalance}</span>
+            </p>
+          </Card>
+        </Col>
 
-        <Card title="Owner Account 😎" bordered={false} style={{ width: 300 }}>
-          <Meta title="Address" description={Owner.address} />
-          <Meta title="Balance" description={this.state.ownerBalance} />
-        </Card>
-      </div>
+        <Col span={6}>
+          <Card title="Send VET">
+            <p>
+              <Input placeholder="Receipient address" />
+            </p>
+
+            <p>
+              <Input placeholder="Amount" />
+            </p>
+            <Button onClick={this.sendMoney}>Send Now</Button>
+          </Card>
+        </Col>
+
+        <Col span={6}></Col>
+      </Row>
     );
   }
 }
