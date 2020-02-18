@@ -10,7 +10,8 @@ const web3 = thorify(new Web3(), "http://localhost:8669");
 
 const Owner = {
   address: "0x8219094017Ff969dCd39957b09DB8a76BbD685e9",
-  privateKey: "history"
+  privateKey:
+    "0x427060bc17768d444ce014fab2d7aea94ed9548640777e1b85a5ec74d82fb82f"
 };
 
 export default class TxDisplay extends React.Component {
