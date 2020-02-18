@@ -1,6 +1,7 @@
 const { thorify } = require("thorify");
 const Web3 = require("web3");
-const web3 = thorify(new Web3(), "http://localhost:8669");
+const BLOCKCHAIN = process.env.BLOCKCHAIN || "http://localhost:8669";
+const web3 = thorify(new Web3(), BLOCKCHAIN);
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 module.exports = function txHandle(req, res) {
