@@ -9,9 +9,7 @@ const Web3 = require("web3");
 const web3 = thorify(new Web3(), "http://localhost:8669");
 
 const Owner = {
-  address: "0x8219094017Ff969dCd39957b09DB8a76BbD685e9",
-  privateKey:
-    "0x427060bc17768d444ce014fab2d7aea94ed9548640777e1b85a5ec74d82fb82f"
+  address: "0x8219094017Ff969dCd39957b09DB8a76BbD685e9"
 };
 
 export default class TxDisplay extends React.Component {
@@ -41,24 +39,6 @@ export default class TxDisplay extends React.Component {
       .then(bal => this.setState({ ownerBalance: bal }));
   };
 
-  sendSignedTransaction = rawTransaction => {
-    return web3.eth
-      .sendSignedTransaction(rawTransaction)
-      .on("receipt", receipt => {
-        console.log("transaction receipt", receipt);
-        this.setState({
-          inTransaction: false,
-          history: [
-            {
-              hash: receipt.transactionHash,
-              recepient: this.recepient,
-              amount: this.amount
-            }
-          ].concat(this.state.history)
-        });
-      });
-  };
-
   getTx = () => {
     console.log("tx receiver and amount", this.recepient, this.amount);
     if (!this.recepient || !this.amount) return null;
@@ -74,11 +54,25 @@ export default class TxDisplay extends React.Component {
 
     this.setState({ inTransaction: true });
 
-    this.sending = web3.eth.accounts
-      .signTransaction(tx, Owner.privateKey)
-      .then(res => {
-        console.log("received signed transaction", res);
-        return this.sendSignedTransaction(res.rawTransaction);
+    return fetch("//localhost:3080/sendTx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(tx)
+    })
+      .then(blob => blob.json())
+      .then(receipt => {
+        this.setState({
+          inTransaction: false,
+          history: [
+            {
+              hash: receipt.transactionHash,
+              recepient: this.recepient,
+              amount: this.amount
+            }
+          ].concat(this.state.history)
+        });
       })
       .catch(err => {
         console.error("failed to sign", err);
