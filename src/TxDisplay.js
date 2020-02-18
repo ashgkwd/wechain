@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Card, Row, Col, Input } from "antd";
+import { Button, Card, Row, Col, Input, Spin } from "antd";
+import TxHistory from "./TxHistory";
 import "antd/dist/antd.css";
 import "./App.css";
 
@@ -9,15 +10,23 @@ const web3 = thorify(new Web3(), "http://localhost:8669");
 
 const Owner = {
   address: "0x8219094017Ff969dCd39957b09DB8a76BbD685e9",
-  privateKey:
-    "0x427060bc17768d444ce014fab2d7aea94ed9548640777e1b85a5ec74d82fb82f"
+  privateKey: "history"
 };
 
 export default class TxDisplay extends React.Component {
   constructor() {
     super();
     this.state = {
-      ownerBalance: "na"
+      inTransaction: false,
+      ownerBalance: "na",
+      history: [
+        {
+          hash:
+            "0x483c294a159cd88cc9d20459503b3108bb874b029b83415722f83b98ae13d346",
+          amount: "1222",
+          recepient: "0xDemoHistory"
+        }
+      ]
     };
   }
 
@@ -32,10 +41,21 @@ export default class TxDisplay extends React.Component {
   };
 
   sendSignedTransaction = rawTransaction => {
-    web3.eth.sendSignedTransaction(rawTransaction).on("receipt", data => {
-      console.log("transaction receipt", data);
-      this.setState({ transaction: "success" });
-    });
+    return web3.eth
+      .sendSignedTransaction(rawTransaction)
+      .on("receipt", receipt => {
+        console.log("transaction receipt", receipt);
+        this.setState({
+          inTransaction: false,
+          history: [
+            {
+              hash: receipt.transactionHash,
+              recepient: this.recepient,
+              amount: this.amount
+            }
+          ].concat(this.state.history)
+        });
+      });
   };
 
   getTx = () => {
@@ -51,6 +71,8 @@ export default class TxDisplay extends React.Component {
     const tx = this.getTx();
     if (!tx) return;
 
+    this.setState({ inTransaction: true });
+
     this.sending = web3.eth.accounts
       .signTransaction(tx, Owner.privateKey)
       .then(res => {
@@ -59,6 +81,7 @@ export default class TxDisplay extends React.Component {
       })
       .catch(err => {
         console.error("failed to sign", err);
+        this.setState({ inTransaction: false });
       });
   };
 
@@ -100,11 +123,24 @@ export default class TxDisplay extends React.Component {
             <p>
               <Input placeholder="Amount" onChange={this.updateAmount} />
             </p>
-            <Button onClick={this.sendMoney}>Send Now</Button>
+            <Button
+              onClick={this.sendMoney}
+              disabled={this.state.inTransaction}
+            >
+              {this.state.inTransaction ? (
+                <span>
+                  <Spin size="small" /> &emsp; Sending
+                </span>
+              ) : (
+                "Send Now"
+              )}
+            </Button>
           </Card>
         </Col>
 
-        <Col span={6}></Col>
+        <Col span={6}>
+          <TxHistory history={this.state.history} />
+        </Col>
       </Row>
     );
   }
