@@ -4,9 +4,11 @@ Simple react and node based app to send money from owner's wallet to desired des
 
 ## Installation
 
-`git clone https://github.com/ashgkwd/wechain.git`
-`cd wechain/front && yarn`
-`cd ../server && yarn`
+```sh
+git clone https://github.com/ashgkwd/wechain.git
+cd wechain/front && yarn
+cd ../server && yarn
+```
 
 ## Start
 
