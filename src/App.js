@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Button } from "antd";
+import { Layout } from "antd";
 import TxDisplay from "./TxDisplay";
 import "antd/dist/antd.css";
 import "./App.css";

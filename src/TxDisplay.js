@@ -7,10 +7,10 @@ import { thorify } from "thorify";
 const Web3 = require("web3");
 const web3 = thorify(new Web3(), "http://localhost:8669");
 
-const { Meta } = Card;
-
 const Owner = {
-  address: "0x8219094017Ff969dCd39957b09DB8a76BbD685e9"
+  address: "0x8219094017Ff969dCd39957b09DB8a76BbD685e9",
+  privateKey:
+    "0x427060bc17768d444ce014fab2d7aea94ed9548640777e1b85a5ec74d82fb82f"
 };
 
 export default class TxDisplay extends React.Component {
@@ -19,32 +19,10 @@ export default class TxDisplay extends React.Component {
     this.state = {
       ownerBalance: "na"
     };
+  }
 
-    // TODO: make a call to fetch balance
-    this.account = "0x8219094017Ff969dCd39957b09DB8a76BbD685e9";
-    this.privateKey = "hidden";
-    this.receiver = "0xb8d8C361c5C71C0959d7d419f50B0B90A3E3D3cd";
-    this.loader = fetch("http://localhost:8669/accounts/" + this.account)
-      .then(res => {
-        console.log("received success from account", res);
-        return res.json();
-      })
-      .then(data => {
-        console.log("data", data);
-        this.setState({
-          label: "loaded",
-          balance: data.balance,
-          energy: data.energy
-        });
-        return data;
-      })
-      .catch(err => {
-        console.error("received error", err);
-      });
-
-    this.thorify = web3.eth
-      .getBalance(this.account)
-      .then(res => console.log("received genesis", res));
+  componentDidMount() {
+    this.getBalance();
   }
 
   getBalance = () => {
@@ -53,10 +31,6 @@ export default class TxDisplay extends React.Component {
       .then(bal => this.setState({ ownerBalance: bal }));
   };
 
-  componentDidMount() {
-    this.getBalance();
-  }
-
   sendSignedTransaction = rawTransaction => {
     web3.eth.sendSignedTransaction(rawTransaction).on("receipt", data => {
       console.log("transaction receipt", data);
@@ -64,14 +38,21 @@ export default class TxDisplay extends React.Component {
     });
   };
 
-  sendMoney = () => {
-    const tx = {
-      to: this.receiver,
-      value: 10000
+  getTx = () => {
+    console.log("tx receiver and amount", this.recepient, this.amount);
+    if (!this.recepient || !this.amount) return null;
+    return {
+      to: this.recepient,
+      value: this.amount
     };
+  };
+
+  sendMoney = () => {
+    const tx = this.getTx();
+    if (!tx) return;
 
     this.sending = web3.eth.accounts
-      .signTransaction(tx, this.privateKey)
+      .signTransaction(tx, Owner.privateKey)
       .then(res => {
         console.log("received signed transaction", res);
         return this.sendSignedTransaction(res.rawTransaction);
@@ -79,6 +60,14 @@ export default class TxDisplay extends React.Component {
       .catch(err => {
         console.error("failed to sign", err);
       });
+  };
+
+  updateRecepient = e => {
+    this.recepient = e.target.value;
+  };
+
+  updateAmount = e => {
+    this.amount = e.target.value;
   };
 
   render() {
@@ -102,11 +91,14 @@ export default class TxDisplay extends React.Component {
         <Col span={6}>
           <Card title="Send VET 🤑">
             <p>
-              <Input placeholder="Receipient address" />
+              <Input
+                placeholder="Receipient address"
+                onChange={this.updateRecepient}
+              />
             </p>
 
             <p>
-              <Input placeholder="Amount" />
+              <Input placeholder="Amount" onChange={this.updateAmount} />
             </p>
             <Button onClick={this.sendMoney}>Send Now</Button>
           </Card>
