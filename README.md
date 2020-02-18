@@ -32,3 +32,10 @@ Ref:
 - https://gist.github.com/ashgkwd/0129d944b69bf6cd845158c4ef6ee6f3
 - https://www.ledger.com/vechain-sync
 - https://github.com/vechain/thor-sync/wiki/Account
+
+## Do I need local thor node running?
+
+If you are not using public thor node, you will need to run a local node. Here are steps to do that:
+
+- Install `thor` https://github.com/vechain/thor
+- Run thor `bin/thor --network test --api-cors "*"`
