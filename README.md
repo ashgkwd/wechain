@@ -39,3 +39,9 @@ If you are not using public thor node, you will need to run a local node. Here a
 
 - Install `thor` https://github.com/vechain/thor
 - Run thor `bin/thor --network test --api-cors "*"`
+
+# Production Links
+
+## Front - React App
+
+React app is deployed at http://kamui.tech:8033/
