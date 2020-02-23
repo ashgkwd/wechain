@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout } from "antd";
+import AppHeader from "./ui/AppHeader";
+import { TransferScreen, JurStatusScreen } from "./ui/screens";
 import TxDisplay from "./TxDisplay";
 import "antd/dist/antd.css";
 import "./App.css";
@@ -7,14 +9,17 @@ import "./App.css";
 const { Header, Footer, Content } = Layout;
 
 function App() {
+  const [screen, setScreen] = useState("transfer");
+  function onScreenChange(e) {
+    setScreen(e.target.value);
+  }
+
   return (
     <div className="App">
       <Layout>
-        <Header className="App-header">
-          Put your address for free VET! 😉
-        </Header>
+        <AppHeader screen={screen} onScreenChange={onScreenChange} />
         <Content className="App-content">
-          <TxDisplay />
+          {screen == "transfer" ? <TransferScreen /> : <JurStatusScreen />}
         </Content>
         <Footer>
           Created with ❤️ by Ashish &middot; Source at <a href="">Github</a>
