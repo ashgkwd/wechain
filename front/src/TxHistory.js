@@ -29,6 +29,7 @@ export default class TxHistory extends React.Component {
                   <a
                     href={"https://insight.vecha.in/#/test/txs/" + h.hash}
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {trimHash(h.hash)}
                   </a>
