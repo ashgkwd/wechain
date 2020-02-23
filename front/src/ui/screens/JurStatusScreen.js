@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Card, Row, Col, Input, Button, Spin, List } from "antd";
+import { Card, Row, Col, Input, Button, Spin, List, Switch } from "antd";
 import Service from "../../Service";
 
 function JurStatusTypeList() {
   const [types, setTypes] = useState([]);
 
+  // useEffect(() => {
+  //   Service.getJurStatusTypes().catch(err => {
+  //     console.error("failed to get jur status types", err);
+  //   });
+  // });
   useEffect(() => {
-    Service.getJurStatusTypes()
-      .then(setTypes)
-      .catch(err => {
-        console.error("failed to get jur status types", err);
-      });
+    console.log("got owner account", Service.getOwnerAccount());
+    // .then(res => console.log("oener acc", res)).catch(err => console.error("failed owner acc"))
   });
 
   return (
@@ -32,23 +34,20 @@ function CreateJurStatusType() {
 
   function createJurStatusType() {
     console.log("about to create jur status type", name);
+    console.log("got owner account", Service.getOwnerAccount());
     setInTransaction(true);
-    return Service.getJurStatusContract()
-      .methods.addStatusType(name)
-      .send({ from: Service.getOwnerAddress(), gas: 100000 })
-      .then(res => {
-        console.log("added status type", res);
+    return Service.createJurStatusType(name)
+      .then(() => {
         setInTransaction(false);
       })
-      .catch(err => {
-        console.error("failed to add status type", err);
+      .catch(() => {
         setInTransaction(false);
       });
   }
 
   return (
     <>
-      <Card title="Create Jur Type">
+      <Card title="Create Jur Status Type">
         <p>
           <Input placeholder="Name A Jur Type" onChange={onNameChange} />
         </p>
@@ -62,17 +61,97 @@ function CreateJurStatusType() {
           )}
         </Button>
       </Card>
-      <JurStatusTypeList />
     </>
   );
 }
 
 function CreateJurStatus() {
-  return <Card title="Create Jur"></Card>;
+  const [inTransaction, setInTransaction] = useState(false);
+  const [address, setAddress] = useState("");
+
+  function onAddressChange(e) {
+    setAddress(e.target.value);
+  }
+
+  const [type, setType] = useState(0);
+
+  function onTypeChange(e) {
+    setType(e.target.value);
+  }
+
+  function createJurStatus() {
+    setInTransaction(true);
+    return Service.createJurStatus(address, type)
+      .then(() => setInTransaction(false))
+      .catch(() => setInTransaction(false));
+  }
+
+  return (
+    <Card title="Create Jur Status">
+      <p>
+        <Input placeholder="Address" onChange={onAddressChange} />
+      </p>
+      <p>
+        <Input placeholder="Jur Status Type" onChange={onTypeChange} />
+      </p>
+      <Button onClick={createJurStatus} disabled={inTransaction}>
+        {inTransaction ? (
+          <span>
+            <Spin size="small" /> &emsp; Creating
+          </span>
+        ) : (
+          "Create Jur Status"
+        )}
+      </Button>
+    </Card>
+  );
 }
 
-function JurStatusList() {
-  return <Card title="Your Jurs"></Card>;
+function JurStatusState() {
+  const [inTransaction, setInTransaction] = useState(false);
+  const [address, setAddress] = useState("");
+
+  function onAddressChange(e) {
+    setAddress(e.target.value);
+  }
+
+  const [state, setState] = useState(0);
+
+  function onStateChange(value) {
+    console.log("switch status", value);
+    setState(value ? 1 : 0);
+  }
+
+  function changeJurStatus() {
+    setInTransaction(true);
+    return Service.changeJurStatus(address, state)
+      .then(() => setInTransaction(false))
+      .catch(() => setInTransaction(false));
+  }
+
+  return (
+    <Card title="Change Jur Status State">
+      <p>
+        <Input placeholder="Address" onChange={onAddressChange} />
+      </p>
+      <p>
+        <Switch
+          onChange={onStateChange}
+          checkedChildren="✔️"
+          unCheckedChildren="❌"
+        />
+      </p>
+      <Button onClick={changeJurStatus} disabled={inTransaction}>
+        {inTransaction ? (
+          <span>
+            <Spin size="small" /> &emsp; Changing
+          </span>
+        ) : (
+          "Change State"
+        )}
+      </Button>
+    </Card>
+  );
 }
 
 function JurStatusScreen() {
@@ -85,7 +164,7 @@ function JurStatusScreen() {
         <CreateJurStatus />
       </Col>
       <Col span={6}>
-        <JurStatusList />
+        <JurStatusState />
       </Col>
     </Row>
   );

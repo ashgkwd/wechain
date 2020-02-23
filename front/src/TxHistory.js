@@ -8,9 +8,6 @@ function trimHash(hash) {
 }
 
 export default class TxHistory extends React.Component {
-  openInsight = hash => () =>
-    window.open("https://insight.vecha.in/#/test/txs/" + hash);
-
   render() {
     const { history } = this.props;
 

@@ -8,7 +8,8 @@ import "./App.css";
 const { Footer, Content } = Layout;
 
 function App() {
-  const [screen, setScreen] = useState("jur-status");
+  const [screen, setScreen] = useState("transfer");
+
   function onScreenChange(e) {
     setScreen(e.target.value);
   }

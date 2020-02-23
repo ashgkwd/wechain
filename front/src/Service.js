@@ -5,12 +5,6 @@ const Web3 = require("web3");
 const BLOCKCHAIN = process.env.REACT_APP_BLOCKCHAIN || "http://3.19.70.175:80";
 console.log("printing env blockchain", BLOCKCHAIN);
 
-const OWNER_ADDRESS =
-  process.env.REACT_APP_OWNER_ADDRESS ||
-  "0x8219094017Ff969dCd39957b09DB8a76BbD685e9";
-
-console.log("printing env owner address", OWNER_ADDRESS);
-
 const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
 if (!PRIVATE_KEY)
   console.error(
@@ -29,7 +23,7 @@ export default (function service() {
 
   return {
     getOwnerAddress() {
-      return OWNER_ADDRESS;
+      return getOwnerAccount().address;
     },
 
     getWeb3Instance() {
@@ -38,17 +32,68 @@ export default (function service() {
 
     getOwnerAccount,
 
-    getJurStatusContract(address = OWNER_ADDRESS) {
-      return new web3.eth.Contract(JurStatusContract.abi, address);
+    getBalance(address) {
+      return this.getWeb3Instance().eth.getBalance(
+        address || this.getOwnerAddress()
+      );
+    },
+
+    getJurStatusContract(address) {
+      return new web3.eth.Contract(
+        JurStatusContract.abi,
+        address || getOwnerAccount().address
+      );
     },
 
     getJurStatusTypes() {
       return this.getJurStatusContract()
-        .methods.statusTypes(0)
+        .methods.statusCount()
         .send({ from: this.getOwnerAddress(), gas: 100000 })
         .then(res => {
           console.log("fetched jur status types", res);
           return res;
+        });
+    },
+
+    createJurStatusType(name) {
+      return this.getJurStatusContract()
+        .methods.addStatusType(name)
+        .send({ from: this.getOwnerAddress(), gas: 100000 })
+        .then(res => {
+          console.log("created jur status type", res);
+          return res;
+        })
+        .catch(err => {
+          console.error("failed to create jur status type", err);
+          return err;
+        });
+    },
+
+    createJurStatus(address, type) {
+      return this.getJurStatusContract()
+        .methods.addJurStatus(address, type)
+        .send({ from: this.getOwnerAddress(), gas: 100000 })
+        .then(res => {
+          console.log("created jur status of type", type, res);
+          return res;
+        })
+        .catch(err => {
+          console.error("failed to create jur status of type", type, err);
+          return err;
+        });
+    },
+
+    changeJurStatus(address, state) {
+      return this.getJurStatusContract()
+        .methods.addJurStatus(address, state)
+        .send({ from: this.getOwnerAddress(), gas: 100000 })
+        .then(res => {
+          console.log("changed jur status to", state, res);
+          return res;
+        })
+        .catch(err => {
+          console.error("failed to change jur status to", state, err);
+          return err;
         });
     }
   };

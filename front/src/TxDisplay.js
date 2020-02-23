@@ -3,21 +3,7 @@ import { Button, Card, Row, Col, Input, Spin } from "antd";
 import TxHistory from "./TxHistory";
 import "antd/dist/antd.css";
 import "./App.css";
-
-import { thorify } from "thorify";
-const Web3 = require("web3");
-
-const BLOCKCHAIN = process.env.REACT_APP_BLOCKCHAIN || "http://3.19.70.175:80";
-
-const web3 = thorify(new Web3(), BLOCKCHAIN);
-
-const OWNER_ADDRESS =
-  process.env.REACT_APP_OWNER_ADDRESS ||
-  "0x8219094017Ff969dCd39957b09DB8a76BbD685e9";
-
-const Owner = {
-  address: OWNER_ADDRESS
-};
+import Service from "./Service";
 
 export default class TxDisplay extends React.Component {
   constructor() {
@@ -41,9 +27,7 @@ export default class TxDisplay extends React.Component {
   }
 
   getBalance = () => {
-    web3.eth
-      .getBalance(Owner.address)
-      .then(bal => this.setState({ ownerBalance: bal }));
+    Service.getBalance().then(bal => this.setState({ ownerBalance: bal }));
   };
 
   getTx = () => {
@@ -61,7 +45,7 @@ export default class TxDisplay extends React.Component {
 
     this.setState({ inTransaction: true });
 
-    return fetch("//kamui.tech:3080/sendTx", {
+    return fetch(process.env.REACT_APP_NODE_SERVER + "/sendTx", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -103,7 +87,7 @@ export default class TxDisplay extends React.Component {
             <p>
               <strong>Address</strong>
               <br />
-              <span>{Owner.address}</span>
+              <span>{Service.getOwnerAddress()}</span>
             </p>
             <p>
               <strong>Balance</strong>
