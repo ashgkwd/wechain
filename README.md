@@ -12,7 +12,8 @@ cd ../server && yarn
 
 ## Start
 
-For react based front end `cd front && npm start`
+For react based front end `cd front` and
+`PRIVATE_KEY=yourlonglongprivatekey npm start`
 
 For node based back end `cd server` and
 `PRIVATE_KEY=yourlonglongprivatekey node index.js`
@@ -24,8 +25,8 @@ Optional params for node server are:
 
 Optional params for react env are:
 
-- `BLOCKCHAIN` eg. BLOCKCHAIN=http://3.19.70.175:80
-- `OWNER_ADDRESS` eg. OWNER_ADDRESS=0x8cde113B94191e8A2F1FA19cdA06FBD7f3372ef9
+- `REACT_APP_BLOCKCHAIN` eg. REACT_APP_BLOCKCHAIN=http://3.19.70.175:80
+- `REACT_APP_NODE_SERVER` eg. REACT_APP_NODE_SERVER=http://kamui.tech:3080
 
 ## How to obtain private key?
 
