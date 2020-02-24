@@ -11,7 +11,7 @@ contract JurStatus {
     statusType - The type of the status complementing the bussiness logic
     */
     struct Status {
-        uint activationTime;
+        uint256 activationTime;
         bool isActive;
         string statusType;
     }
@@ -20,21 +20,29 @@ contract JurStatus {
     string[] public statusTypes;
 
     /** Mapping between the address of the Jur Status holders and their properties */
-    mapping(address  => Status) public status;
+    mapping(address => Status) public status;
 
     /** Total count of Jur Statuses. */
-    uint public statusCount;
+    uint256 public statusCount;
 
-    event StateChanged(address statusHolder, bool newState, uint timestamp);
-    event StatusAdded(address statusHolder, uint activationTime, string statusType);
+    event StateChanged(address statusHolder, bool newState, uint256 timestamp);
+    event StatusAdded(
+        address statusHolder,
+        uint256 activationTime,
+        string statusType
+    );
+    event TypeAdded(
+        uint256 activationTime,
+        string statusType,
+        uint256 statusCount
+    );
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Access not granted.");
         _;
     }
 
-    constructor()
-    public {
+    constructor() public {
         owner = msg.sender;
     }
 
@@ -45,11 +53,10 @@ contract JurStatus {
     @param _statusType - The position of the value from the statusTypes array signifying the
     status type.
     */
-    function addJurStatus(
-    address _statusHolder,
-    uint _statusType
-    ) public
-    onlyOwner {
+    function addJurStatus(address _statusHolder, uint256 _statusType)
+        public
+        onlyOwner
+    {
         require(_statusHolder != address(0), "Please provide a valid address.");
         status[_statusHolder] = Status(now, true, statusTypes[_statusType]);
         statusCount++;
@@ -62,14 +69,19 @@ contract JurStatus {
     @param _statusHolder - The address holding the Jur Status.
     @param _newState -  Boolean status to update.
     */
-    function changeState(
-    address _statusHolder,
-    bool _newState
-    ) public
-    onlyOwner {
+    function changeState(address _statusHolder, bool _newState)
+        public
+        onlyOwner
+    {
         require(_statusHolder != address(0), "Pleae provide a valid address.");
-        require(status[_statusHolder].activationTime != 0, "Address is not a Jur Status holder.");
-        require(status[_statusHolder].isActive != _newState, "Already in the similar state.");
+        require(
+            status[_statusHolder].activationTime != 0,
+            "Address is not a Jur Status holder."
+        );
+        require(
+            status[_statusHolder].isActive != _newState,
+            "Already in the similar state."
+        );
         status[_statusHolder].isActive = _newState;
 
         emit StateChanged(_statusHolder, _newState, now);
@@ -80,11 +92,13 @@ contract JurStatus {
     logic.
     @param _statusType - The new status type.
     */
-    function addStatusType(
-    string memory _statusType
-    ) public
-    onlyOwner {
-        require(bytes(_statusType).length != 0, "Status type cannot be an empty string.");
+    function addStatusType(string memory _statusType) public onlyOwner {
+        require(
+            bytes(_statusType).length != 0,
+            "Status type cannot be an empty string."
+        );
         statusTypes.push(_statusType);
+
+        emit TypeAdded(now, _statusType, statusCount);
     }
 }

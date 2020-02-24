@@ -1,6 +1,6 @@
 {
   "name": "jur-status-smart-contract",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This repo will contain the main smart contract for the Jur status.",
   "main": "truffle-config.js",
   "directories": {
