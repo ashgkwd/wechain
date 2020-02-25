@@ -9,7 +9,8 @@ import {
   Spin,
   List,
   Switch,
-  message
+  message,
+  Form
 } from "antd";
 import Service from "../../Service";
 
@@ -50,7 +51,11 @@ function CreateJurStatusType() {
   }
 
   function createJurStatusType() {
-    console.log("about to create jur status type", name);
+    if (!name) {
+      message.warn("Please provide Jur Status Type");
+      return;
+    }
+
     setInTransaction(true);
     return Service.createJurStatusType(name)
       .then(() => {
@@ -66,9 +71,9 @@ function CreateJurStatusType() {
   return (
     <>
       <Card title="Create Jur Status Type">
-        <p>
-          <Input placeholder="Name A Jur Type" onChange={onNameChange} />
-        </p>
+        <Form.Item label="Jur Status Type" required>
+          <Input placeholder="Cambodia" onChange={onNameChange} />
+        </Form.Item>
         <Button onClick={createJurStatusType} disabled={inTransaction}>
           {inTransaction ? (
             <span>
@@ -99,6 +104,23 @@ function CreateJurStatus() {
   }
 
   function createJurStatus() {
+    if (!address || !type) {
+      message.warn("Please provide valid address and type index");
+      return;
+    }
+
+    if (address && (address.length < 40 || address.length > 42)) {
+      message.warn("Please ensure that the address is valid");
+      return;
+    }
+
+    if (type) {
+      if (!isFinite(type) || type < 0) {
+        message.warn("Please provide valid Jur Status Type index");
+        return;
+      }
+    }
+
     setInTransaction(true);
     return Service.createJurStatus(address, type)
       .then(() => {
@@ -113,12 +135,12 @@ function CreateJurStatus() {
 
   return (
     <Card title="Create Jur Status">
-      <p>
-        <Input placeholder="Address" onChange={onAddressChange} />
-      </p>
-      <p>
-        <Input placeholder="Jur Status Type" onChange={onTypeChange} />
-      </p>
+      <Form.Item label="Address to assign" required>
+        <Input placeholder="0x6omebody5" onChange={onAddressChange} />
+      </Form.Item>
+      <Form.Item label="Jur Status Type Index" required>
+        <Input placeholder="1" onChange={onTypeChange} />
+      </Form.Item>
       <Button onClick={createJurStatus} disabled={inTransaction}>
         {inTransaction ? (
           <span>
@@ -148,6 +170,14 @@ function JurStatusState() {
   }
 
   function changeJurStatus() {
+    if (!address) {
+      message.warn("Please provide valid address");
+      return;
+    } else if (address.length < 40 || address.length > 42) {
+      message.warn("Please ensure that the address is valid");
+      return;
+    }
+
     setInTransaction(true);
     return Service.changeJurStatus(address, state)
       .then(() => {
@@ -162,14 +192,14 @@ function JurStatusState() {
 
   return (
     <Card title="Change Jur Status State">
-      <p>
+      <Form.Item label="Address of assigned" required>
         <Input placeholder="Address" onChange={onAddressChange} />
-      </p>
+      </Form.Item>
       <p>
         <Switch
           onChange={onStateChange}
-          checkedChildren="✔️"
-          unCheckedChildren="❌"
+          checkedChildren="1"
+          unCheckedChildren="0"
         />
       </p>
       <Button onClick={changeJurStatus} disabled={inTransaction}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Row, Col, Input, Spin, message } from "antd";
+import { Button, Card, Row, Col, Input, Spin, message, Form } from "antd";
 import TxHistory from "./TxHistory";
 import "antd/dist/antd.css";
 import "./App.css";
@@ -46,7 +46,10 @@ export default class TxDisplay extends React.Component {
 
   sendMoney = () => {
     const tx = this.getTx();
-    if (!tx) return;
+    if (!tx) {
+      message.warn("Please provide both recepient and amount");
+      return;
+    }
 
     this.setState({ inTransaction: true });
 
@@ -106,16 +109,13 @@ export default class TxDisplay extends React.Component {
 
         <Col span={6}>
           <Card title="Send VET 🤑">
-            <p>
-              <Input
-                placeholder="Receipient address"
-                onChange={this.updateRecepient}
-              />
-            </p>
+            <Form.Item label="Recipient Address" required>
+              <Input placeholder="0x7861337" onChange={this.updateRecepient} />
+            </Form.Item>
 
-            <p>
-              <Input placeholder="Amount" onChange={this.updateAmount} />
-            </p>
+            <Form.Item label="Amount" required>
+              <Input placeholder="512" onChange={this.updateAmount} />
+            </Form.Item>
             <Button
               onClick={this.sendMoney}
               disabled={this.state.inTransaction}
