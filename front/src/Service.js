@@ -1,5 +1,5 @@
 import { thorify } from "thorify";
-import JurStatusContract from "./contract-build/contracts/JurStatus";
+import JurStatusContract from "./contract-build/contracts/JurStatusABI";
 const Web3 = require("web3");
 
 const BLOCKCHAIN = process.env.REACT_APP_BLOCKCHAIN || "http://3.19.70.175:80";
@@ -19,7 +19,17 @@ export default (function service() {
     return web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
   }
 
+  function getJurStatusContract(address) {
+    return new web3.eth.Contract(
+      JurStatusContract.abi,
+      JurStatusContract.address,
+      { from: address || getOwnerAccount().address }
+    );
+  }
+
   web3.eth.accounts.wallet.add(getOwnerAccount());
+
+  // getJurStatusContract().events.StatusAdded();
 
   return {
     getOwnerAddress() {
@@ -31,6 +41,7 @@ export default (function service() {
     },
 
     getOwnerAccount,
+    getJurStatusContract,
 
     getBalance(address) {
       return this.getWeb3Instance().eth.getBalance(
@@ -38,17 +49,11 @@ export default (function service() {
       );
     },
 
-    getJurStatusContract(address) {
-      return new web3.eth.Contract(
-        JurStatusContract.abi,
-        address || getOwnerAccount().address
-      );
-    },
-
-    getJurStatusTypes() {
+    getJurStatusTypes(index = 0) {
+      console.log("webt", web3);
       return this.getJurStatusContract()
-        .methods.statusCount()
-        .send({ from: this.getOwnerAddress(), gas: 100000 })
+        .methods.statusTypes(index)
+        .call()
         .then(res => {
           console.log("fetched jur status types", res);
           return res;
@@ -58,7 +63,7 @@ export default (function service() {
     createJurStatusType(name) {
       return this.getJurStatusContract()
         .methods.addStatusType(name)
-        .send({ from: this.getOwnerAddress(), gas: 100000 })
+        .send({ from: this.getOwnerAddress(), gas: 500000 })
         .then(res => {
           console.log("created jur status type", res);
           return res;
@@ -72,7 +77,7 @@ export default (function service() {
     createJurStatus(address, type) {
       return this.getJurStatusContract()
         .methods.addJurStatus(address, type)
-        .send({ from: this.getOwnerAddress(), gas: 100000 })
+        .send({ from: this.getOwnerAddress(), gas: 500000 })
         .then(res => {
           console.log("created jur status of type", type, res);
           return res;
@@ -86,7 +91,7 @@ export default (function service() {
     changeJurStatus(address, state) {
       return this.getJurStatusContract()
         .methods.addJurStatus(address, state)
-        .send({ from: this.getOwnerAddress(), gas: 100000 })
+        .send({ from: this.getOwnerAddress(), gas: 500000 })
         .then(res => {
           console.log("changed jur status to", state, res);
           return res;

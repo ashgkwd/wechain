@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import { Card, Row, Col, Input, Button, Spin, List, Switch } from "antd";
 import Service from "../../Service";
 
-function JurStatusTypeList() {
-  const [types, setTypes] = useState([]);
+const StyledDebugCard = styled(Card)`
+  margin-top: 1rem;
+  background-color: skyblue;
+`;
 
-  // useEffect(() => {
-  //   Service.getJurStatusTypes().catch(err => {
-  //     console.error("failed to get jur status types", err);
-  //   });
-  // });
-  useEffect(() => {
-    console.log("got owner account", Service.getOwnerAccount());
-    // .then(res => console.log("oener acc", res)).catch(err => console.error("failed owner acc"))
-  });
+function DebugCard() {
+  const [index, setIndex] = useState([]);
+
+  function onIndexChange(e) {
+    setIndex(e.target.value);
+  }
+
+  function onGetStatusTypeClick() {
+    Service.getJurStatusTypes(index).catch(err => {
+      console.error("failed to get jur status types", err);
+    });
+  }
 
   return (
-    <List>
-      {types.map((s, i) => (
-        <List.Item key={i}>{s}</List.Item>
-      ))}
-    </List>
+    <StyledDebugCard title="Debug Card (F12 for console)">
+      <p>
+        <Input onChange={onIndexChange} placeholder="Index (defaults to 0)" />
+      </p>
+      <Button onClick={onGetStatusTypeClick}>Get Jur Status Types</Button>
+    </StyledDebugCard>
   );
 }
 
@@ -34,7 +41,6 @@ function CreateJurStatusType() {
 
   function createJurStatusType() {
     console.log("about to create jur status type", name);
-    console.log("got owner account", Service.getOwnerAccount());
     setInTransaction(true);
     return Service.createJurStatusType(name)
       .then(() => {
@@ -61,6 +67,7 @@ function CreateJurStatusType() {
           )}
         </Button>
       </Card>
+      <DebugCard></DebugCard>
     </>
   );
 }
