@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Card, Row, Col, Input, Button, Spin, List, Switch } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Input,
+  Button,
+  Spin,
+  List,
+  Switch,
+  message
+} from "antd";
 import Service from "../../Service";
 
 const StyledDebugCard = styled(Card)`
@@ -44,9 +54,11 @@ function CreateJurStatusType() {
     setInTransaction(true);
     return Service.createJurStatusType(name)
       .then(() => {
+        message.success("Created Jur Status Type");
         setInTransaction(false);
       })
       .catch(() => {
+        message.error("Failed to create Jur Status Type");
         setInTransaction(false);
       });
   }
@@ -89,8 +101,14 @@ function CreateJurStatus() {
   function createJurStatus() {
     setInTransaction(true);
     return Service.createJurStatus(address, type)
-      .then(() => setInTransaction(false))
-      .catch(() => setInTransaction(false));
+      .then(() => {
+        message.success("Created Jur Status");
+        setInTransaction(false);
+      })
+      .catch(() => {
+        message.error("Failed to create Jur Status");
+        setInTransaction(false);
+      });
   }
 
   return (
@@ -132,8 +150,14 @@ function JurStatusState() {
   function changeJurStatus() {
     setInTransaction(true);
     return Service.changeJurStatus(address, state)
-      .then(() => setInTransaction(false))
-      .catch(() => setInTransaction(false));
+      .then(() => {
+        message.success("Changed Jur Status");
+        setInTransaction(false);
+      })
+      .catch(() => {
+        message.error("Failed to create Jur Status");
+        setInTransaction(false);
+      });
   }
 
   return (

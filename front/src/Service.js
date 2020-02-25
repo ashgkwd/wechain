@@ -67,10 +67,6 @@ export default (function service() {
         .then(res => {
           console.log("created jur status type", res);
           return res;
-        })
-        .catch(err => {
-          console.error("failed to create jur status type", err);
-          return err;
         });
     },
 
@@ -81,10 +77,6 @@ export default (function service() {
         .then(res => {
           console.log("created jur status of type", type, res);
           return res;
-        })
-        .catch(err => {
-          console.error("failed to create jur status of type", type, err);
-          return err;
         });
     },
 
@@ -95,10 +87,6 @@ export default (function service() {
         .then(res => {
           console.log("changed jur status to", state, res);
           return res;
-        })
-        .catch(err => {
-          console.error("failed to change jur status to", state, err);
-          return err;
         });
     }
   };

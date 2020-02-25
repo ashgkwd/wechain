@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Row, Col, Input, Spin } from "antd";
+import { Button, Card, Row, Col, Input, Spin, message } from "antd";
 import TxHistory from "./TxHistory";
 import "antd/dist/antd.css";
 import "./App.css";
@@ -27,7 +27,12 @@ export default class TxDisplay extends React.Component {
   }
 
   getBalance = () => {
-    Service.getBalance().then(bal => this.setState({ ownerBalance: bal }));
+    Service.getBalance()
+      .then(bal => this.setState({ ownerBalance: bal }))
+      .catch(err => {
+        console.error("failed to fetch balance", err);
+        message.error("Failed to fetch balance");
+      });
   };
 
   getTx = () => {
@@ -54,6 +59,7 @@ export default class TxDisplay extends React.Component {
     })
       .then(blob => blob.json())
       .then(receipt => {
+        message.info("Transaction initiated");
         this.setState({
           inTransaction: false,
           history: [
@@ -67,6 +73,7 @@ export default class TxDisplay extends React.Component {
       })
       .catch(err => {
         console.error("failed to sign", err);
+        message.error("Failed to send money");
         this.setState({ inTransaction: false });
       });
   };
