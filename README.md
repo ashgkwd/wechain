@@ -97,8 +97,13 @@ Supervisor takes care of auto restarting node server and thor instance.
 
 Ref: http://supervisord.org/running.html
 
+## Debug
+
+To see logs of thor node and node app:
+`tail -f /var/log/we*`
+
+To see log of react app, in browser `F12` or right click and inspect element > console
+
 # Production Links
 
-## Front - React App
-
-React app is deployed at http://kamui.tech:8033/
+The app is deployed at http://13.58.163.28/
