@@ -46,6 +46,25 @@ If you are not using public thor node, you will need to run a local node. Here a
 - Install `thor` https://github.com/vechain/thor
 - Run thor `bin/thor --network test --api-cors "*"`
 
+### Server thor node setup
+
+```sh
+sudo apt update
+sudo apt install build-essential
+wget https://dl.google.com/go/go1.14.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.14.linux-amd64.tar.gz
+echo "export PATH=\$PATH:/usr/local/go/bin" >> .profile
+source .profile
+git clone https://github.com/vechain/thor.git
+cd thor
+make dep
+make all
+```
+
+Run thor using `bin/thor --network test --api-cors "*" --api-addr 0.0.0.0:8669`
+
+Ref: https://www.reddit.com/r/Vechain/comments/99jgs3/how_to_build_a_dapp_on_vechain_initial_steps/
+
 # Production Links
 
 ## Front - React App
