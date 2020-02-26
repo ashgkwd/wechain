@@ -64,6 +64,22 @@ make all
 Run thor using `bin/thor --network test --api-cors "*" --api-addr 0.0.0.0:8669`
 
 Ref: https://www.reddit.com/r/Vechain/comments/99jgs3/how_to_build_a_dapp_on_vechain_initial_steps/
+Ref: https://medium.com/@muhammadtriwibowo/set-permanently-ulimit-n-open-files-in-ubuntu-4d61064429a
+
+### Server react and node setup
+
+You will need node and npm. Ref: https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/
+
+```sh
+git clone https://github.com/ashgkwd/wechain.git
+cd wechain/front && npm install
+npm run build
+cd /var/www/http && sudo ln -s /home/ubuntu/wechain/front/build/ wechain
+```
+
+Create apache2 conf file in /etc/apache2/sites-available/wechain.conf and paste contents of wechain-apache2.conf file from this repo. Modify according to your needs.
+
+Then enable site and reload apache2 `sudo a2ensite wechain.conf` and `sudo service apache2 reload`
 
 # Production Links
 
