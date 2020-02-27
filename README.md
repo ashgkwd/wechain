@@ -104,6 +104,8 @@ To see logs of thor node and node app:
 
 To see log of react app, in browser `F12` or right click and inspect element > console
 
+Mounting EBS volume in ubuntu instance: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html
+
 # Production Links
 
 The app is deployed at http://13.58.163.28/
