@@ -50,12 +50,21 @@ export default (function service() {
     },
 
     getJurStatusTypes(index = 0) {
-      console.log("webt", web3);
       return this.getJurStatusContract()
         .methods.statusTypes(index)
         .call()
         .then(res => {
           console.log("fetched jur status types", res);
+          return res;
+        });
+    },
+
+    getJurStatusCount() {
+      return this.getJurStatusContract()
+        .methods.statusCount()
+        .call()
+        .then(res => {
+          console.log("fetched jur status count", res);
           return res;
         });
     },
