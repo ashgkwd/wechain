@@ -1,9 +1,9 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { render } from "@testing-library/react";
+import AppHeader from "./ui/AppHeader";
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test("renders WeChain in header", () => {
+  const { getByText } = render(<AppHeader />);
+  const titleElm = getByText(/WeChain/i);
+  expect(titleElm).toBeInTheDocument();
 });
