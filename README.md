@@ -106,6 +106,8 @@ To see log of react app, in browser `F12` or right click and inspect element > c
 
 Mounting EBS volume in ubuntu instance: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html
 
+To run test cases for react `cd front && npm run test`
+
 # Production Links
 
 The app is deployed at http://13.58.163.28/
