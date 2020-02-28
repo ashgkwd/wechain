@@ -12,7 +12,7 @@ import {
   message,
   Form
 } from "antd";
-import Service from "../../Service";
+import Service from "../Service";
 
 const StyledDebugCard = styled(Card)`
   margin-top: 1rem;

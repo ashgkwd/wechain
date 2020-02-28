@@ -12,8 +12,9 @@ cd ../server && yarn
 
 ## Start
 
-For react based front end `cd front` and
-`PRIVATE_KEY=yourlonglongprivatekey npm start`
+Ensure that `front/.env` file has private key `PRIVATE_KEY=yourlonglongprivatekey`
+
+For react based front end `cd front` and `npm start`
 
 For node based back end `cd server` and
 `PRIVATE_KEY=yourlonglongprivatekey node index.js`
