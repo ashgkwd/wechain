@@ -23,8 +23,9 @@ export default function CreateJurStatusType() {
         message.success("Created Jur Status Type");
         setInTransaction(false);
       })
-      .catch(() => {
+      .catch(err => {
         message.error("Failed to create Jur Status Type");
+        console.error("failed to create type", err);
         setInTransaction(false);
       });
   }

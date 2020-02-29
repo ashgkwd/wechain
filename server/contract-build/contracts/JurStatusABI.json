@@ -1,0 +1,165 @@
+{
+  "address": "0x2846CdA7234A11e6465Ef6c96a50AFe5698e9eA3",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_statusHolder",
+          "type": "address"
+        },
+        {
+          "name": "_newState",
+          "type": "bool"
+        }
+      ],
+      "name": "changeState",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_statusHolder",
+          "type": "address"
+        },
+        {
+          "name": "_statusType",
+          "type": "uint256"
+        }
+      ],
+      "name": "addJurStatus",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "statusCount",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "status",
+      "outputs": [
+        {
+          "name": "activationTime",
+          "type": "uint256"
+        },
+        {
+          "name": "isActive",
+          "type": "bool"
+        },
+        {
+          "name": "statusType",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_statusType",
+          "type": "string"
+        }
+      ],
+      "name": "addStatusType",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "statusTypes",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "statusHolder",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "newState",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "StateChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "statusHolder",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "activationTime",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "statusType",
+          "type": "string"
+        }
+      ],
+      "name": "StatusAdded",
+      "type": "event"
+    }
+  ]
+}

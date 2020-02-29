@@ -1,5 +1,6 @@
 const express = require("express");
 const txHandle = require("./txHandle.js");
+const jurHandle = require("./jurHandle.js");
 const app = express();
 const port = process.env.PORT || 3080;
 
@@ -25,6 +26,9 @@ app.use(function(req, res, next) {
   }
 });
 
-app.get("/", (req, res) => res.send("Hello World!")).post("/sendTx", txHandle);
+app
+  .get("/", (req, res) => res.send("Hello World!"))
+  .post("/sendTx", txHandle)
+  .post("/jur", jurHandle);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

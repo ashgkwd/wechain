@@ -12,14 +12,20 @@ if (!PRIVATE_KEY)
     PRIVATE_KEY
   );
 
+function executeJur(method, params = []) {
+  return fetch(process.env.REACT_APP_NODE_SERVER + "/jur", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ method, params })
+  }).then(blob => blob.json());
+}
+
 export default (function service() {
   console.log("given provider by web3", Web3.givenProvider);
   let thorified = thorify(new Web3(), "https://sync-testnet.vechain.org");
   let web3 = new Web3("http://127.0.0.1:8545");
-
-  const store = {
-    blockchain: BLOCKCHAIN
-  };
 
   function getOwnerAccount() {
     return web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
@@ -34,6 +40,7 @@ export default (function service() {
   }
 
   web3.eth.accounts.wallet.add(getOwnerAccount());
+  thorified.eth.accounts.wallet.add(getOwnerAccount());
 
   // getJurStatusContract().events.StatusAdded();
 
@@ -76,13 +83,14 @@ export default (function service() {
     },
 
     createJurStatusType(name) {
-      return this.getJurStatusContract()
-        .methods.addStatusType(name)
-        .send({ from: this.getOwnerAddress(), gas: 500000 })
-        .then(res => {
-          console.log("created jur status type", res);
-          return res;
-        });
+      return executeJur("addStatusType", [name]);
+      // return this.getJurStatusContract()
+      //   .methods.addStatusType(name)
+      //   .send({ from: this.getOwnerAddress(), gas: 500000 })
+      //   .then(res => {
+      //     console.log("created jur status type", res);
+      //     return res;
+      //   });
     },
 
     createJurStatus(address, type) {
@@ -97,7 +105,7 @@ export default (function service() {
 
     changeJurStatus(address, state) {
       return this.getJurStatusContract()
-        .methods.addJurStatus(address, state)
+        .methods.changeState(address, state)
         .send({ from: this.getOwnerAddress(), gas: 500000 })
         .then(res => {
           console.log("changed jur status to", state, res);
