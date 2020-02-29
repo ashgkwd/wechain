@@ -13,7 +13,13 @@ if (!PRIVATE_KEY)
   );
 
 export default (function service() {
-  const web3 = thorify(new Web3(), BLOCKCHAIN);
+  console.log("given provider by web3", Web3.givenProvider);
+  let thorified = thorify(new Web3(), "https://sync-testnet.vechain.org");
+  let web3 = new Web3("http://127.0.0.1:8545");
+
+  const store = {
+    blockchain: BLOCKCHAIN
+  };
 
   function getOwnerAccount() {
     return web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
@@ -97,6 +103,33 @@ export default (function service() {
           console.log("changed jur status to", state, res);
           return res;
         });
+    },
+
+    signAndSend(tx) {
+      const { to, value } = tx;
+
+      console.log("to", to, "and value", value, "private key", PRIVATE_KEY);
+
+      return thorified.eth.accounts
+        .signTransaction(
+          { to, value, gas: 5000000, chain: "testnet" },
+          PRIVATE_KEY
+        )
+        .then(data => {
+          console.log("received signed transaction", data);
+          return this.sendSignedTransaction(data.rawTransaction);
+        })
+        .catch(err => {
+          console.error("failed to sign", err);
+          return err;
+        });
+    },
+
+    sendSignedTransaction(raw) {
+      return web3.eth.sendSignedTransaction(raw).on("receipt", receipt => {
+        console.log("transaction receipt", receipt);
+        return receipt;
+      });
     }
   };
 })();

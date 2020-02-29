@@ -1,7 +1,8 @@
 const { thorify } = require("thorify");
 const Web3 = require("web3");
 const BLOCKCHAIN = process.env.BLOCKCHAIN || "http://localhost:8669";
-const web3 = thorify(new Web3(), BLOCKCHAIN);
+const web3 = thorify(new Web3(), "https://sync-testnet.vechain.org");
+// let web3 = new Web3("http://127.0.0.1:8545");
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 module.exports = function txHandle(req, res) {
@@ -17,7 +18,8 @@ module.exports = function txHandle(req, res) {
     })
     .catch(err => {
       console.error("failed to sign", err);
-      res.send("failed");
+      res.status(401);
+      res.send(err.message);
     });
 };
 

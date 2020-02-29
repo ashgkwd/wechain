@@ -53,6 +53,8 @@ export default class TxDisplay extends React.Component {
 
     this.setState({ inTransaction: true });
 
+    // return (
+    // Service.signAndSend(tx)
     return fetch(process.env.REACT_APP_NODE_SERVER + "/sendTx", {
       method: "POST",
       headers: {
@@ -79,6 +81,7 @@ export default class TxDisplay extends React.Component {
         message.error("Failed to send money");
         this.setState({ inTransaction: false });
       });
+    // );
   };
 
   updateRecepient = e => {
