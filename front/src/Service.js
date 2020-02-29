@@ -84,33 +84,14 @@ export default (function service() {
 
     createJurStatusType(name) {
       return executeJur("addStatusType", [name]);
-      // return this.getJurStatusContract()
-      //   .methods.addStatusType(name)
-      //   .send({ from: this.getOwnerAddress(), gas: 500000 })
-      //   .then(res => {
-      //     console.log("created jur status type", res);
-      //     return res;
-      //   });
     },
 
     createJurStatus(address, type) {
-      return this.getJurStatusContract()
-        .methods.addJurStatus(address, type)
-        .send({ from: this.getOwnerAddress(), gas: 500000 })
-        .then(res => {
-          console.log("created jur status of type", type, res);
-          return res;
-        });
+      return executeJur("addJurStatus", [address, type]);
     },
 
-    changeJurStatus(address, state) {
-      return this.getJurStatusContract()
-        .methods.changeState(address, state)
-        .send({ from: this.getOwnerAddress(), gas: 500000 })
-        .then(res => {
-          console.log("changed jur status to", state, res);
-          return res;
-        });
+    changeJurState(address, state) {
+      return executeJur("changeState", [address, state]);
     },
 
     signAndSend(tx) {

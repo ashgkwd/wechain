@@ -17,7 +17,7 @@ export default function JurStatusState() {
     setState(value ? 1 : 0);
   }
 
-  function changeJurStatus() {
+  function changeJurState() {
     if (!address) {
       message.warn("Please provide valid address");
       return;
@@ -27,7 +27,7 @@ export default function JurStatusState() {
     }
 
     setInTransaction(true);
-    return Service.changeJurStatus(address, state)
+    return Service.changeJurState(address, state)
       .then(() => {
         message.success("Changed Jur Status");
         setInTransaction(false);
@@ -50,7 +50,7 @@ export default function JurStatusState() {
           unCheckedChildren="0"
         />
       </p>
-      <Button onClick={changeJurStatus} disabled={inTransaction}>
+      <Button onClick={changeJurState} disabled={inTransaction}>
         {inTransaction ? (
           <span>
             <Spin size="small" /> &emsp; Changing
