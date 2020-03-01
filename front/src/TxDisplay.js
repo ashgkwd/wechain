@@ -55,7 +55,7 @@ export default class TxDisplay extends React.Component {
 
     // return (
     // Service.signAndSend(tx)
-    return fetch(process.env.REACT_APP_NODE_SERVER + "/sendTx", {
+    return fetch(process.env.REACT_APP_NODE_SERVER + "/transfer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
