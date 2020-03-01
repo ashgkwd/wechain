@@ -1,8 +1,8 @@
 require("dotenv").config();
 const express = require("express");
-const txHandle = require("./txHandle.js");
-const jurHandle = require("./jurHandle.js");
-var bodyParser = require("body-parser");
+const transferHandle = require("./transferHandle");
+const jurHandle = require("./jurHandle");
+const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT;
@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
 
 app
   .get("/", (ignore, res) => res.send("It works!"))
-  .post("/transfer", txHandle)
+  .post("/transfer", transferHandle)
   .post("/jur", jurHandle);
 
 app.listen(port, () =>

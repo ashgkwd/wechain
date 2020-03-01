@@ -1,5 +1,4 @@
-const { thorify } = require("thorify");
-const Web3 = require("web3");
+const { web3, ownerAccount } = require("./blockchain");
 const contractConfig = require("./contract-build/contracts/JurStatusABI.json");
 
 const WHITELISTED_METHODS = ["addStatusType", "addJurStatus", "changeState"];
@@ -9,14 +8,6 @@ const WHITELISTED_METHODS = ["addStatusType", "addJurStatus", "changeState"];
 // const whitelistedMethods = contractConfig.abi.filter(a => {
 //   a.stateMutability == "nonpayable" && a.name
 // }).map(a => a.name);
-
-const web3 = thorify(new Web3(), process.env.BLOCKCHAIN);
-
-const ownerAccount = web3.eth.accounts.privateKeyToAccount(
-  process.env.PRIVATE_KEY
-);
-
-web3.eth.accounts.wallet.add(ownerAccount);
 
 const contract = new web3.eth.Contract(
   contractConfig.abi,
