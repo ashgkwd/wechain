@@ -6,7 +6,7 @@ function trimHash(hash = "") {
   return hash.substr(0, 7) + "..." + hash.substr(hash.length - 5);
 }
 
-const TxID = styled.p`
+const Hidable = styled.p`
   display: ${props => (props.hide ? "none" : "block")};
 `;
 
@@ -17,11 +17,11 @@ function HistoryCard({ history = [] }) {
         {history.map((h, i) => (
           <List.Item key={i}>
             <div>
-              <p>
+              <Hidable hide={!h.to || !h.value}>
                 To: <strong>{trimHash(h.to)}</strong> &emsp; VET:{" "}
                 <strong>{h.value}</strong>
-              </p>
-              <TxID hide={!trimHash.transactionHash}>
+              </Hidable>
+              <Hidable hide={!h.transactionHash}>
                 Tx ID:{" "}
                 <a
                   href={
@@ -32,7 +32,7 @@ function HistoryCard({ history = [] }) {
                 >
                   {trimHash(h.transactionHash)}
                 </a>
-              </TxID>
+              </Hidable>
               {h.error ? <Alert message={h.error} type="error" /> : null}
             </div>
           </List.Item>

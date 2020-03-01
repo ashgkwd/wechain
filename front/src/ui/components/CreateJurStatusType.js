@@ -2,10 +2,16 @@ import { Button, Card, Form, Input, message, Spin } from "antd";
 import React, { useState } from "react";
 import Service from "../../Service";
 import DebugCard from "./DebugCard";
+import HistoryCard from "./HistoryCard";
 
 export default function CreateJurStatusType() {
+  const [history, setHistory] = useState([]);
   const [inTransaction, setInTransaction] = useState(false);
   const [name, setName] = useState("");
+
+  function appendToHistory(transaction) {
+    setHistory([transaction].concat(history));
+  }
 
   function onNameChange(e) {
     setName(e.target.value);
@@ -19,14 +25,17 @@ export default function CreateJurStatusType() {
 
     setInTransaction(true);
     return Service.createJurStatusType(name)
-      .then(() => {
+      .then(res => {
         message.success("Created Jur Status Type");
+        console.log("Created Jur Status Type", res);
         setInTransaction(false);
+        appendToHistory(res);
       })
       .catch(err => {
         message.error("Failed to create Jur Status Type");
         console.error("failed to create type", err);
         setInTransaction(false);
+        appendToHistory({ error: err });
       });
   }
 
@@ -46,6 +55,8 @@ export default function CreateJurStatusType() {
           )}
         </Button>
       </Card>
+      <br />
+      <HistoryCard history={history}></HistoryCard>
       <DebugCard></DebugCard>
     </>
   );
