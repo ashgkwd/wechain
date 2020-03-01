@@ -2,7 +2,14 @@ const { thorify } = require("thorify");
 const Web3 = require("web3");
 const contractConfig = require("./contract-build/contracts/JurStatusABI.json");
 
-const WHITELIST = ["addStatusType", "addJurStatus", "changeState"];
+const WHITELISTED_METHODS = ["addStatusType", "addJurStatus", "changeState"];
+
+// NOTE: We can read white listed methods from contract ABI also:
+//
+// const whitelistedMethods = contractConfig.abi.filter(a => {
+//   a.stateMutability == "nonpayable" && a.name
+// }).map(a => a.name);
+
 const web3 = thorify(new Web3(), process.env.BLOCKCHAIN);
 
 const ownerAccount = web3.eth.accounts.privateKeyToAccount(
@@ -20,9 +27,9 @@ const contract = new web3.eth.Contract(
 );
 
 module.exports = function jurHandle(req, res) {
-  const { method, params } = req.body;
+  const { method, params = [] } = req.body;
 
-  if (!WHITELIST.includes(method)) return res.sendStatus(404);
+  if (!WHITELISTED_METHODS.includes(method)) return res.sendStatus(404);
 
   return contract.methods[method](...params)
     .send({ from: ownerAccount.address, gas: 500000 })
