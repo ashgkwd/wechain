@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { List, Card, Alert } from "antd";
+import styled from "styled-components";
 
 function trimHash(hash = "") {
   return hash.substr(0, 7) + "..." + hash.substr(hash.length - 5);
 }
+
+const TxID = styled.p`
+  display: ${props => (props.hide ? "none" : "block")};
+`;
 
 function HistoryCard({ history = [] }) {
   return (
@@ -16,7 +21,7 @@ function HistoryCard({ history = [] }) {
                 To: <strong>{trimHash(h.to)}</strong> &emsp; VET:{" "}
                 <strong>{h.value}</strong>
               </p>
-              <p>
+              <TxID hide={!trimHash.transactionHash}>
                 Tx ID:{" "}
                 <a
                   href={
@@ -27,7 +32,7 @@ function HistoryCard({ history = [] }) {
                 >
                   {trimHash(h.transactionHash)}
                 </a>
-              </p>
+              </TxID>
               {h.error ? <Alert message={h.error} type="error" /> : null}
             </div>
           </List.Item>
