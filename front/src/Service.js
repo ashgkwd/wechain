@@ -94,30 +94,23 @@ export default (function service() {
       return executeJur("changeState", [address, state]);
     },
 
-    signAndSend(tx) {
-      const { to, value } = tx;
-
-      console.log("to", to, "and value", value, "private key", PRIVATE_KEY);
-
-      return thorified.eth.accounts
-        .signTransaction(
-          { to, value, gas: 5000000, chain: "testnet" },
-          PRIVATE_KEY
-        )
-        .then(data => {
-          console.log("received signed transaction", data);
-          return this.sendSignedTransaction(data.rawTransaction);
-        })
-        .catch(err => {
-          console.error("failed to sign", err);
-          return err;
-        });
-    },
-
-    sendSignedTransaction(raw) {
-      return web3.eth.sendSignedTransaction(raw).on("receipt", receipt => {
-        console.log("transaction receipt", receipt);
-        return receipt;
+    sendMoney(tx) {
+      return fetch(process.env.REACT_APP_NODE_SERVER + "/transfer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(tx)
+      }).then(res => {
+        console.log("received send money server response", res);
+        return res.ok
+          ? res.json()
+          : new Promise((resolve, reject) => {
+              res
+                .text()
+                .then(reject)
+                .catch(reject);
+            });
       });
     }
   };

@@ -1,8 +1,8 @@
 require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
 const transferHandle = require("./transferHandle");
 const jurHandle = require("./jurHandle");
-const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT;
