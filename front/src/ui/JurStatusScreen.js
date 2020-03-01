@@ -7,13 +7,13 @@ import JurStatusState from "./components/JurStatusState";
 function JurStatusScreen() {
   return (
     <Row type="flex" justify="space-around">
-      <Col span={8}>
+      <Col span={6}>
         <CreateJurStatusType />
       </Col>
-      <Col span={6}>
+      <Col span={8}>
         <CreateJurStatus />
       </Col>
-      <Col span={6}>
+      <Col span={8}>
         <JurStatusState />
       </Col>
     </Row>

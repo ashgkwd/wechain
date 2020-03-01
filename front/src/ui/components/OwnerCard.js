@@ -6,7 +6,7 @@ function OwnerCard() {
   const [balance, setBalance] = useState("NA");
   useEffect(() => {
     Service.getBalance().then(setBalance);
-  });
+  }, []);
 
   return (
     <Card title="Owner Account 😎" bordered={false}>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { List, Card, Alert } from "antd";
+import { Alert, Card, List } from "antd";
+import React from "react";
 import styled from "styled-components";
 
 function trimHash(hash = "") {
