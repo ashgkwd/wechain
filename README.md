@@ -67,6 +67,12 @@ Run thor using `bin/thor --network test --api-cors "*" --api-addr 0.0.0.0:8669`
 Ref: https://www.reddit.com/r/Vechain/comments/99jgs3/how_to_build_a_dapp_on_vechain_initial_steps/
 Ref: https://medium.com/@muhammadtriwibowo/set-permanently-ulimit-n-open-files-in-ubuntu-4d61064429a
 
+### Server web3-gear setup
+
+`pip3 install web3-gear`
+
+Ref: https://github.com/vechain/web3-gear
+
 ### Server react app setup
 
 You will need node and npm. Ref: https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/
