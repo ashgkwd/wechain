@@ -12,6 +12,27 @@ if (!PRIVATE_KEY)
     PRIVATE_KEY
   );
 
+function handleError(text) {
+  console.log("handle Error", text);
+  let error = text;
+  try {
+    if (`${text}`.indexOf("TYPE html>") > -1) {
+      let d = document.createElement("div");
+      d.innerHTML = text;
+      error = d.childNodes[5].textContent;
+    }
+  } catch (err) {
+    console.warn("failed to read error", err);
+    return Promise.reject(error);
+  }
+  return Promise.reject(error);
+}
+
+function handleFetch(res) {
+  console.log("received send money server response", res);
+  return res.ok ? res.json() : res.text().then(handleError);
+}
+
 function executeJur(method, params = []) {
   return fetch(process.env.REACT_APP_NODE_SERVER + "/jur", {
     method: "POST",
@@ -19,7 +40,7 @@ function executeJur(method, params = []) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ method, params })
-  }).then(blob => blob.json());
+  }).then(handleFetch);
 }
 
 export default (function service() {
@@ -101,17 +122,7 @@ export default (function service() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(tx)
-      }).then(res => {
-        console.log("received send money server response", res);
-        return res.ok
-          ? res.json()
-          : new Promise((resolve, reject) => {
-              res
-                .text()
-                .then(reject)
-                .catch(reject);
-            });
-      });
+      }).then(handleFetch);
     }
   };
 })();
