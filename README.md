@@ -118,3 +118,5 @@ To run test cases for react `cd front && npm run test`
 # Production Links
 
 The app is deployed at http://13.58.163.28/
+
+When you setup a new server, ensure ~/wechain/front/.env, ~/wechain/server/.env, ~/wegear/passcode and ~/wegear/owneraccountkeystore.txt are manually placed with correct content.
