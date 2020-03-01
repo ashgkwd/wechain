@@ -1,40 +1,13 @@
-import { thorify } from "thorify";
-import JurStatusContract from "./contract-build/contracts/JurStatusABI";
+import { handleFetch } from "./Util";
+import contractConfig from "./contract-build/contracts/JurStatusABI";
 const Web3 = require("web3");
 
-const BLOCKCHAIN = process.env.REACT_APP_BLOCKCHAIN || "http://3.19.70.175:80";
-console.log("printing env blockchain", BLOCKCHAIN);
-
+const NODE_SERVER = process.env.REACT_APP_NODE_SERVER;
+const BLOCKCHAIN = process.env.REACT_APP_BLOCKCHAIN;
 const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
-if (!PRIVATE_KEY)
-  console.error(
-    "you must provide REACT_APP_PRIVATE_KEY. Received",
-    PRIVATE_KEY
-  );
-
-function handleError(text) {
-  console.log("handle Error", text);
-  let error = text;
-  try {
-    if (`${text}`.indexOf("TYPE html>") > -1) {
-      let d = document.createElement("div");
-      d.innerHTML = text;
-      error = d.childNodes[5].textContent;
-    }
-  } catch (err) {
-    console.warn("failed to read error", err);
-    return Promise.reject(error);
-  }
-  return Promise.reject(error);
-}
-
-function handleFetch(res) {
-  console.log("received send money server response", res);
-  return res.ok ? res.json() : res.text().then(handleError);
-}
 
 function executeJur(method, params = []) {
-  return fetch(process.env.REACT_APP_NODE_SERVER + "/jur", {
+  return fetch(NODE_SERVER + "/jur", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -44,48 +17,28 @@ function executeJur(method, params = []) {
 }
 
 export default (function service() {
-  console.log("given provider by web3", Web3.givenProvider);
-  let thorified = thorify(new Web3(), "https://sync-testnet.vechain.org");
-  let web3 = new Web3("http://127.0.0.1:8545");
+  const web3 = new Web3(BLOCKCHAIN);
+  const ownerAccount = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
+  const contract = new web3.eth.Contract(
+    contractConfig.abi,
+    contractConfig.address,
+    { from: ownerAccount.address }
+  );
 
-  function getOwnerAccount() {
-    return web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
-  }
-
-  function getJurStatusContract(address) {
-    return new web3.eth.Contract(
-      JurStatusContract.abi,
-      JurStatusContract.address,
-      { from: address || getOwnerAccount().address }
-    );
-  }
-
-  web3.eth.accounts.wallet.add(getOwnerAccount());
-  thorified.eth.accounts.wallet.add(getOwnerAccount());
-
-  // getJurStatusContract().events.StatusAdded();
+  web3.eth.accounts.wallet.add(ownerAccount);
 
   return {
     getOwnerAddress() {
-      return getOwnerAccount().address;
+      return ownerAccount.address;
     },
 
-    getWeb3Instance() {
-      return web3;
-    },
-
-    getOwnerAccount,
-    getJurStatusContract,
-
-    getBalance(address) {
-      return this.getWeb3Instance().eth.getBalance(
-        address || this.getOwnerAddress()
-      );
+    getBalance() {
+      return web3.eth.getBalance(ownerAccount.address);
     },
 
     getJurStatusTypes(index = 0) {
-      return this.getJurStatusContract()
-        .methods.statusTypes(index)
+      return contract.methods
+        .statusTypes(index)
         .call()
         .then(res => {
           console.log("fetched jur status types", res);
@@ -94,8 +47,8 @@ export default (function service() {
     },
 
     getJurStatusCount() {
-      return this.getJurStatusContract()
-        .methods.statusCount()
+      return contract.methods
+        .statusCount()
         .call()
         .then(res => {
           console.log("fetched jur status count", res);
@@ -116,7 +69,7 @@ export default (function service() {
     },
 
     sendMoney(tx) {
-      return fetch(process.env.REACT_APP_NODE_SERVER + "/transfer", {
+      return fetch(NODE_SERVER + "/transfer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
