@@ -12,22 +12,11 @@ cd ../server && yarn
 
 ## Start
 
-Ensure that `front/.env` file has private key `PRIVATE_KEY=yourlonglongprivatekey`
+Ensure that `front/.env` file has `REACT_APP_BLOCKCHAIN`, `REACT_APP_NODE_SERVER` and `REACT_APP_PRIVATE_KEY`
+To start front `cd front` and `npm start`.
 
-For react based front end `cd front` and `npm start`
-
-For node based back end `cd server` and
-`PRIVATE_KEY=yourlonglongprivatekey node index.js`
-
-Optional params for node server are:
-
-- `PORT` eg. PORT=2020
-- `BLOCKCHAIN` eg. BLOCKCHAIN=https://sync-testnet.vechain.org
-
-Optional params for react env are:
-
-- `REACT_APP_BLOCKCHAIN` eg. REACT_APP_BLOCKCHAIN=http://3.19.70.175:80
-- `REACT_APP_NODE_SERVER` eg. REACT_APP_NODE_SERVER=http://kamui.tech:3080
+Ensure that `server/.env` file has `PORT`, `BLOCKCHAIN` and `PRIVATE_KEY`
+To start node based back end `cd server` and `node index.js`.
 
 ## How to obtain private key?
 
