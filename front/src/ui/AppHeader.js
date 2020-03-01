@@ -1,8 +1,8 @@
-import React, { useState } from "react";
 import { Layout, Radio } from "antd";
+import React from "react";
 import styled from "styled-components";
 
-const { Header, Footer, Content } = Layout;
+const { Header } = Layout;
 
 const Title = styled.span`
   color: white;

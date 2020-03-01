@@ -1,10 +1,16 @@
 import { Button, Card, Form, Input, message, Spin } from "antd";
 import React, { useState } from "react";
+import HistoryCard from "./HistoryCard";
 import Service from "../../Service";
 
 export default function CreateJurStatus() {
   const [inTransaction, setInTransaction] = useState(false);
   const [address, setAddress] = useState("");
+  const [history, setHistory] = useState([]);
+
+  function appendToHistory(transaction) {
+    setHistory([transaction].concat(history));
+  }
 
   function onAddressChange(e) {
     setAddress(e.target.value);
@@ -36,33 +42,40 @@ export default function CreateJurStatus() {
 
     setInTransaction(true);
     return Service.createJurStatus(address, type)
-      .then(() => {
+      .then(res => {
         message.success("Created Jur Status");
         setInTransaction(false);
+        appendToHistory({ to: address, ...res });
       })
-      .catch(() => {
+      .catch(err => {
         message.error("Failed to create Jur Status");
+        console.error("failed to create status", err);
         setInTransaction(false);
+        appendToHistory({ to: address, error: err });
       });
   }
 
   return (
-    <Card title="Create Jur Status">
-      <Form.Item label="Address to assign" required>
-        <Input placeholder="0x6omebody5" onChange={onAddressChange} />
-      </Form.Item>
-      <Form.Item label="Jur Status Type Index" required>
-        <Input placeholder="1" onChange={onTypeChange} />
-      </Form.Item>
-      <Button onClick={createJurStatus} disabled={inTransaction}>
-        {inTransaction ? (
-          <span>
-            <Spin size="small" /> &emsp; Creating
-          </span>
-        ) : (
-          "Create Jur Status"
-        )}
-      </Button>
-    </Card>
+    <>
+      <Card title="Create Jur Status">
+        <Form.Item label="Address to assign" required>
+          <Input placeholder="0x6omebody5" onChange={onAddressChange} />
+        </Form.Item>
+        <Form.Item label="Jur Status Type Index" required>
+          <Input placeholder="1" onChange={onTypeChange} />
+        </Form.Item>
+        <Button onClick={createJurStatus} disabled={inTransaction}>
+          {inTransaction ? (
+            <span>
+              <Spin size="small" /> &emsp; Creating
+            </span>
+          ) : (
+            "Create Jur Status"
+          )}
+        </Button>
+      </Card>
+      <br />
+      <HistoryCard history={history}></HistoryCard>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { Button, Card, Input } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
 import Service from "../../Service";
+import { createOnChange } from "../../Util";
 
 const StyledDebugCard = styled(Card)`
   margin-top: 1rem;
@@ -11,14 +12,16 @@ const StyledDebugCard = styled(Card)`
 export default function DebugCard() {
   const [index, setIndex] = useState([]);
 
-  function onIndexChange(e) {
-    setIndex(e.target.value);
-  }
+  const onIndexChange = createOnChange(setIndex);
 
-  function onGetStatusTypeClick() {
+  function onTypeClick() {
     Service.getJurStatusTypes(index).catch(err => {
       console.error("failed to get jur status types", err);
     });
+  }
+
+  function onCountClick() {
+    return Service.getJurStatusCount();
   }
 
   return (
@@ -26,7 +29,12 @@ export default function DebugCard() {
       <p>
         <Input onChange={onIndexChange} placeholder="Index (defaults to 0)" />
       </p>
-      <Button onClick={onGetStatusTypeClick}>Get Jur Status Types</Button>
+      <p>
+        <Button onClick={onTypeClick}>Get Jur Status Types</Button>
+      </p>
+      <p>
+        <Button onClick={onCountClick}>Get Jur Status Count</Button>
+      </p>
     </StyledDebugCard>
   );
 }

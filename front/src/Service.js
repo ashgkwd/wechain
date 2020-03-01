@@ -12,8 +12,41 @@ if (!PRIVATE_KEY)
     PRIVATE_KEY
   );
 
+function handleError(text) {
+  console.log("handle Error", text);
+  let error = text;
+  try {
+    if (`${text}`.indexOf("TYPE html>") > -1) {
+      let d = document.createElement("div");
+      d.innerHTML = text;
+      error = d.childNodes[5].textContent;
+    }
+  } catch (err) {
+    console.warn("failed to read error", err);
+    return Promise.reject(error);
+  }
+  return Promise.reject(error);
+}
+
+function handleFetch(res) {
+  console.log("received send money server response", res);
+  return res.ok ? res.json() : res.text().then(handleError);
+}
+
+function executeJur(method, params = []) {
+  return fetch(process.env.REACT_APP_NODE_SERVER + "/jur", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ method, params })
+  }).then(handleFetch);
+}
+
 export default (function service() {
-  const web3 = thorify(new Web3(), BLOCKCHAIN);
+  console.log("given provider by web3", Web3.givenProvider);
+  let thorified = thorify(new Web3(), "https://sync-testnet.vechain.org");
+  let web3 = new Web3("http://127.0.0.1:8545");
 
   function getOwnerAccount() {
     return web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
@@ -28,6 +61,7 @@ export default (function service() {
   }
 
   web3.eth.accounts.wallet.add(getOwnerAccount());
+  thorified.eth.accounts.wallet.add(getOwnerAccount());
 
   // getJurStatusContract().events.StatusAdded();
 
@@ -70,33 +104,25 @@ export default (function service() {
     },
 
     createJurStatusType(name) {
-      return this.getJurStatusContract()
-        .methods.addStatusType(name)
-        .send({ from: this.getOwnerAddress(), gas: 500000 })
-        .then(res => {
-          console.log("created jur status type", res);
-          return res;
-        });
+      return executeJur("addStatusType", [name]);
     },
 
     createJurStatus(address, type) {
-      return this.getJurStatusContract()
-        .methods.addJurStatus(address, type)
-        .send({ from: this.getOwnerAddress(), gas: 500000 })
-        .then(res => {
-          console.log("created jur status of type", type, res);
-          return res;
-        });
+      return executeJur("addJurStatus", [address, type]);
     },
 
-    changeJurStatus(address, state) {
-      return this.getJurStatusContract()
-        .methods.addJurStatus(address, state)
-        .send({ from: this.getOwnerAddress(), gas: 500000 })
-        .then(res => {
-          console.log("changed jur status to", state, res);
-          return res;
-        });
+    changeJurState(address, state) {
+      return executeJur("changeState", [address, state]);
+    },
+
+    sendMoney(tx) {
+      return fetch(process.env.REACT_APP_NODE_SERVER + "/transfer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(tx)
+      }).then(handleFetch);
     }
   };
 })();

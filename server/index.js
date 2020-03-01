@@ -1,10 +1,13 @@
+require("dotenv").config();
 const express = require("express");
-const txHandle = require("./txHandle.js");
-const app = express();
-const port = process.env.PORT || 3080;
+const bodyParser = require("body-parser");
+const transferHandle = require("./transferHandle");
+const jurHandle = require("./jurHandle");
 
-var bodyParser = require("body-parser");
-app.use(bodyParser.json()); // support json encoded bodies
+const app = express();
+const port = process.env.PORT;
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(function(req, res, next) {
@@ -15,16 +18,14 @@ app.use(function(req, res, next) {
     "Content-Type, Authorization, Content-Length, X-Requested-With"
   );
 
-  //intercepts OPTIONS method
-  if ("OPTIONS" === req.method) {
-    //respond with 200
-    res.sendStatus(200);
-  } else {
-    //move on
-    next();
-  }
+  "OPTIONS" === req.method ? res.sendStatus(200) : next();
 });
 
-app.get("/", (req, res) => res.send("Hello World!")).post("/sendTx", txHandle);
+app
+  .get("/", (ignore, res) => res.send("It works!"))
+  .post("/transfer", transferHandle)
+  .post("/jur", jurHandle);
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () =>
+  console.log(`WeChain node app listening on port ${port}!`)
+);
