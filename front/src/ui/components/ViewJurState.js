@@ -32,10 +32,12 @@ export default function JurStatusState() {
         setInTransaction(false);
         appendToHistory({
           to: address,
+          extra: `Status type is '${res.statusType}'`,
           value: res.isActive ? "true" : "false"
         });
       })
       .catch(err => {
+        console.error("failed to fetch state", err);
         message.error("Failed to fetch state");
         setInTransaction(false);
         appendToHistory({ to: address, error: err });

@@ -34,6 +34,7 @@ function HistoryCard({ history = [] }) {
                 </a>
               </Hidable>
               {h.error ? <Alert message={h.error} type="error" /> : null}
+              <p>{h.extra}</p>
             </div>
           </List.Item>
         ))}
