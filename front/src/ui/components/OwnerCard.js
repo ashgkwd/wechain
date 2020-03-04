@@ -1,13 +1,8 @@
 import { Card } from "antd";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Service from "../../Service";
 
-function OwnerCard() {
-  const [balance, setBalance] = useState("NA");
-  useEffect(() => {
-    Service.getBalance().then(setBalance);
-  }, []);
-
+function OwnerCard({ balance }) {
   return (
     <Card title="Owner Account 😎" bordered={false}>
       <p>
