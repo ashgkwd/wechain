@@ -1,16 +1,6 @@
-import {
-  Button,
-  Card,
-  Form,
-  Input,
-  message,
-  Spin,
-  Switch,
-  Divider
-} from "antd";
+import { Button, Card, Form, Input, message, Spin, Switch } from "antd";
 import React, { useState } from "react";
 import HistoryCard from "./HistoryCard";
-import ViewJurState from "./ViewJurState";
 import Service from "../../Service";
 
 export default function JurStatusState() {
@@ -26,14 +16,7 @@ export default function JurStatusState() {
     setAddress(e.target.value);
   }
 
-  const [state, setState] = useState(0);
-
-  function onStateChange(value) {
-    console.log("switch status", value);
-    setState(value ? 1 : 0);
-  }
-
-  function changeJurState() {
+  function viewJurState() {
     if (!address) {
       message.warn("Please provide valid address");
       return;
@@ -43,14 +26,17 @@ export default function JurStatusState() {
     }
 
     setInTransaction(true);
-    return Service.changeJurState(address, state)
+    return Service.getJurState(address)
       .then(res => {
-        message.success("Changed Jur Status");
+        message.success("Fetched state successfully");
         setInTransaction(false);
-        appendToHistory({ to: address, ...res });
+        appendToHistory({
+          to: address,
+          value: res.isActive ? "true" : "false"
+        });
       })
       .catch(err => {
-        message.error("Failed to change Jur Status");
+        message.error("Failed to fetch state");
         setInTransaction(false);
         appendToHistory({ to: address, error: err });
       });
@@ -58,27 +44,18 @@ export default function JurStatusState() {
 
   return (
     <>
-      <ViewJurState />
-      <Divider />
-      <br />
-      <Card title="Change Jur Status State">
+      <Card title="View Jur Status State">
         <Form.Item label="Address of assigned" required>
           <Input placeholder="Address" onChange={onAddressChange} />
         </Form.Item>
-        <p>
-          <Switch
-            onChange={onStateChange}
-            checkedChildren="1"
-            unCheckedChildren="0"
-          />
-        </p>
-        <Button onClick={changeJurState} disabled={inTransaction}>
+
+        <Button onClick={viewJurState} disabled={inTransaction}>
           {inTransaction ? (
             <span>
-              <Spin size="small" /> &emsp; Changing
+              <Spin size="small" /> &emsp; Fetching
             </span>
           ) : (
-            "Change State"
+            "View State"
           )}
         </Button>
       </Card>

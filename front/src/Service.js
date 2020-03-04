@@ -56,6 +56,16 @@ export default (function service() {
         });
     },
 
+    getJurState(address) {
+      return contract.methods
+        .status(address)
+        .call()
+        .then(res => {
+          console.log("fetched jur state", res);
+          return res;
+        });
+    },
+
     createJurStatusType(name) {
       return executeJur("addStatusType", [name]);
     },

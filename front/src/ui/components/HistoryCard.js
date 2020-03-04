@@ -18,8 +18,8 @@ function HistoryCard({ history = [] }) {
           <List.Item key={i}>
             <div>
               <Hidable hide={!h.to || !h.value}>
-                To: <strong>{trimHash(h.to)}</strong> &emsp; VET:{" "}
-                <strong>{h.value}</strong>
+                Addr: <strong title={h.to}>{trimHash(h.to)}</strong> &emsp;
+                Value: <strong>{h.value}</strong>
               </Hidable>
               <Hidable hide={!h.transactionHash}>
                 Tx ID:{" "}
