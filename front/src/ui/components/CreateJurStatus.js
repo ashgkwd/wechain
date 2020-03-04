@@ -2,57 +2,57 @@ import { Button, Card, Form, Input, message, Spin } from "antd";
 import React, { useState } from "react";
 import HistoryCard from "./HistoryCard";
 import Service from "../../Service";
+import { createOnChange } from "../../Util";
 
 export default function CreateJurStatus() {
   const [inTransaction, setInTransaction] = useState(false);
   const [address, setAddress] = useState("");
   const [history, setHistory] = useState([]);
+  const [type, setType] = useState(0);
+
+  const onAddressChange = createOnChange(setAddress);
+  const onTypeChange = createOnChange(setType);
 
   function appendToHistory(transaction) {
     setHistory([transaction].concat(history));
   }
 
-  function onAddressChange(e) {
-    setAddress(e.target.value);
-  }
-
-  const [type, setType] = useState(0);
-
-  function onTypeChange(e) {
-    setType(e.target.value);
-  }
-
-  function createJurStatus() {
+  function isInputValid() {
     if (!address || !type) {
       message.warn("Please provide valid address and type index");
-      return;
+      return false;
     }
 
     if (address && (address.length < 40 || address.length > 42)) {
       message.warn("Please ensure that the address is valid");
-      return;
+      return false;
     }
 
     if (type) {
       if (!isFinite(type) || type < 0) {
         message.warn("Please provide valid Jur Status Type index");
-        return;
+        return false;
       }
     }
+
+    return true;
+  }
+
+  function createJurStatus() {
+    if (!isInputValid()) return;
 
     setInTransaction(true);
     return Service.createJurStatus(address, type)
       .then(res => {
         message.success("Created Jur Status");
-        setInTransaction(false);
         appendToHistory({ to: address, ...res });
       })
       .catch(err => {
         message.error("Failed to create Jur Status");
         console.error("failed to create status", err);
-        setInTransaction(false);
         appendToHistory({ to: address, error: err });
-      });
+      })
+      .finally(() => setInTransaction(false));
   }
 
   return (
